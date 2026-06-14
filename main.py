@@ -3,7 +3,7 @@ main.py
 Entry point for the Student Grade Tracker CLI application.
 Handles all user interaction: menus, input collection, and output display.
 """
-
+import re
 from grade_tracker import GradeTracker
 
 
@@ -40,9 +40,12 @@ def get_grades_from_user():
                 grade_number = float(grade)
                 if grade_number < 0 or grade_number > 100:
                     print("Grades must be between 0 and 100.")
-                    break
+                    return get_grades_from_user()
                 grades.append(grade_number)
             else:
+                if len(grades) == 0:
+                    print("You must enter at least one grade.")
+                    continue
                 return grades
         except ValueError:
             print("Invalid grade. Please enter numbers only.")
@@ -58,9 +61,28 @@ def add_student_flow(tracker):
     print("\n--- Add New Student ---")
     name = input("Enter student name: ").strip()
     student_id = input("Enter student ID: ").strip()
+
     if name == "" or student_id == "":
         print("Name and student ID cannot be empty.")
         return
+
+    if not student_id.isalnum():
+        print("Student ID must contain only letters and numbers.")
+        return
+    
+    # Ensure name contains first and last name
+    name_parts = name.split()
+
+    if len(name_parts) < 2:
+        print("Please enter both first and last name.")
+        return
+    
+    # Ensure name does not contain numbers
+    for part in name_parts:
+        if not re.match(r"^[A-Za-zÀ-ÿ'-]+$", part):
+            print("Name contains invalid characters. ")
+            return
+        
     grades = get_grades_from_user()
     try:
         tracker.add_student(name, student_id, grades)
