@@ -40,7 +40,7 @@ def get_grades_from_user():
                 grade_number = float(grade)
                 if grade_number < 0 or grade_number > 100:
                     print("Grades must be between 0 and 100.")
-                    return get_grades_from_user()
+                    continue
                 grades.append(grade_number)
             else:
                 if len(grades) == 0:
